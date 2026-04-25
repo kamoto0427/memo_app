@@ -341,15 +341,38 @@ header span {
   padding: 18px 20px;
   box-shadow: var(--shadow-sm);
   transition: box-shadow var(--transition), transform var(--transition);
-  animation: slideIn 0.22s ease;
+  animation: bounceIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.7) translateY(-16px); }
+  60%  { opacity: 1; transform: scale(1.04) translateY(4px); }
+  80%  { transform: scale(0.98); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes flyOut {
+  to { opacity: 0; transform: translateX(130%) rotate(8deg) scale(0.8); }
+}
+
+.card-fly-out {
+  animation: flyOut 0.32s ease-in forwards;
+  pointer-events: none;
 }
 
 .memo-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+.memo-card.card-dragging {
+  opacity: 0.45;
+  transform: scale(1.03) rotate(1.5deg);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.18);
+  z-index: 10;
+  cursor: grabbing;
+}
+
+.memo-card.card-drag-over {
+  border-top: 2.5px dashed var(--accent);
+}
 
 .memo-card.editing {
   border-color: var(--accent);
@@ -362,6 +385,20 @@ header span {
   gap: 12px;
   margin-bottom: 8px;
 }
+
+.drag-handle {
+  cursor: grab;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  user-select: none;
+  opacity: 0.35;
+  transition: opacity var(--transition);
+}
+
+.memo-card:hover .drag-handle { opacity: 0.7; }
+.drag-handle:active { cursor: grabbing; }
 
 .memo-card-title {
   flex: 1;

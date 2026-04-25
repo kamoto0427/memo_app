@@ -11,6 +11,7 @@ export function renderMemoCard(memo: Memo, callbacks: MemoCardCallbacks): HTMLEl
   const card = document.createElement('div');
   card.className = 'memo-card';
   card.id = `card-${memo.id}`;
+  card.dataset.memoId = String(memo.id);
   card.innerHTML = buildCardHTML(memo);
 
   card.querySelector<HTMLButtonElement>('.btn-edit')!
@@ -41,6 +42,7 @@ function buildCardHTML(memo: Memo): string {
 
   return `
     <div class="memo-card-header">
+      <span class="drag-handle" title="ドラッグして並び替え">⠿</span>
       <div class="memo-card-title">${escHtml(memo.title)}</div>
       <div class="memo-card-actions">
         ${statusBadge}

@@ -3,9 +3,10 @@ export interface Memo {
   title: string;
   body: string;
   status: 'draft' | 'published';
+  order: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export type SortOrder = 'newest' | 'oldest' | 'alpha';
+export type SortOrder = 'newest' | 'oldest' | 'alpha' | 'manual';
 export type StatusFilter = 'all' | 'draft' | 'published';
