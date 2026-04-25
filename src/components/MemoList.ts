@@ -1,9 +1,10 @@
-import { Memo, SortOrder } from '../types';
+import { Memo, SortOrder, StatusFilter } from '../types';
 import { renderMemoCard } from './MemoCard';
 
 interface MemoListCallbacks {
   onEdit: (id: number, title: string, body: string) => void;
   onDelete: (id: number) => void;
+  onStatusChange: (id: number, status: 'draft' | 'published') => void;
 }
 
 export class MemoList {
@@ -15,8 +16,8 @@ export class MemoList {
     this.visibleCountEl = document.getElementById('visible-count')!;
   }
 
-  render(memos: Memo[], query: string, sort: SortOrder): void {
-    const filtered = this.filter(memos, query);
+  render(memos: Memo[], query: string, sort: SortOrder, statusFilter: StatusFilter): void {
+    const filtered = this.filterByStatus(this.filter(memos, query), statusFilter);
     const sorted = this.sort(filtered, sort);
 
     this.visibleCountEl.textContent = String(sorted.length);
@@ -28,7 +29,7 @@ export class MemoList {
           <p>${
             memos.length === 0
               ? 'まだメモがありません。最初のメモを追加してみましょう！'
-              : '検索結果が見つかりません。'
+              : '該当するメモが見つかりません。'
           }</p>
         </div>`;
       return;
@@ -46,6 +47,11 @@ export class MemoList {
     return memos.filter(
       (m) => m.title.toLowerCase().includes(q) || m.body.toLowerCase().includes(q)
     );
+  }
+
+  private filterByStatus(memos: Memo[], statusFilter: StatusFilter): Memo[] {
+    if (statusFilter === 'all') return memos;
+    return memos.filter((m) => m.status === statusFilter);
   }
 
   private sort(memos: Memo[], order: SortOrder): Memo[] {

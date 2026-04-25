@@ -3,7 +3,7 @@ import { MemoStore } from './memoStore';
 import { MemoForm } from './components/MemoForm';
 import { MemoList } from './components/MemoList';
 import { ConfirmDialog } from './components/ConfirmDialog';
-import { SortOrder } from './types';
+import { SortOrder, StatusFilter } from './types';
 import { showToast } from './utils';
 
 const store = new MemoStore();
@@ -11,12 +11,24 @@ const store = new MemoStore();
 const headerCount = document.getElementById('memo-count-header')!;
 const searchInput = document.getElementById('search-input') as HTMLInputElement;
 const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+
+let statusFilter: StatusFilter = 'all';
 
 function refresh(): void {
   const memos = store.getAll();
   headerCount.textContent = `${memos.length} 件`;
-  memoList.render(memos, searchInput.value, sortSelect.value as SortOrder);
+  memoList.render(memos, searchInput.value, sortSelect.value as SortOrder, statusFilter);
 }
+
+filterBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    statusFilter = btn.dataset.filter as StatusFilter;
+    refresh();
+  });
+});
 
 const confirmDialog = new ConfirmDialog((id) => {
   store.remove(id);
@@ -31,12 +43,17 @@ const memoList = new MemoList({
     showToast('メモを更新しました');
   },
   onDelete: (id) => confirmDialog.open(id),
+  onStatusChange: (id, status) => {
+    store.updateStatus(id, status);
+    refresh();
+    showToast(status === 'published' ? 'メモを公開しました' : '下書きに戻しました');
+  },
 });
 
-new MemoForm((title, body) => {
-  store.add(title, body);
+new MemoForm((title, body, status) => {
+  store.add(title, body, status);
   refresh();
-  showToast('メモを追加しました');
+  showToast(status === 'published' ? 'メモを公開しました' : '下書きとして保存しました');
 });
 
 searchInput.addEventListener('input', refresh);
