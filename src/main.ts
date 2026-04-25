@@ -31,9 +31,19 @@ filterBtns.forEach((btn) => {
 });
 
 const confirmDialog = new ConfirmDialog((id) => {
-  store.remove(id);
-  refresh();
-  showToast('メモを削除しました');
+  const card = document.querySelector<HTMLElement>(`[data-memo-id="${id}"]`);
+  if (card) {
+    card.classList.add('card-fly-out');
+    card.addEventListener('animationend', () => {
+      store.remove(id);
+      refresh();
+      showToast('メモを削除しました');
+    }, { once: true });
+  } else {
+    store.remove(id);
+    refresh();
+    showToast('メモを削除しました');
+  }
 });
 
 const memoList = new MemoList({
@@ -47,6 +57,11 @@ const memoList = new MemoList({
     store.updateStatus(id, status);
     refresh();
     showToast(status === 'published' ? 'メモを公開しました' : '下書きに戻しました');
+  },
+  onReorder: (orderedIds) => {
+    store.reorder(orderedIds);
+    sortSelect.value = 'manual';
+    refresh();
   },
 });
 
