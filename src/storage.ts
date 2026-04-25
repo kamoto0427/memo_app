@@ -4,7 +4,8 @@ const KEY = 'memos';
 
 export function loadMemos(): Memo[] {
   try {
-    return JSON.parse(localStorage.getItem(KEY) ?? '[]') as Memo[];
+    const memos = JSON.parse(localStorage.getItem(KEY) ?? '[]') as Memo[];
+    return memos.map((m) => ({ ...m, status: m.status ?? 'published' }));
   } catch {
     return [];
   }

@@ -8,12 +8,13 @@ export class MemoStore {
     return [...this.memos];
   }
 
-  add(title: string, body: string): Memo {
+  add(title: string, body: string, status: 'draft' | 'published'): Memo {
     const now = new Date().toISOString();
     const memo: Memo = {
       id: Date.now(),
       title: title.trim() || '無題のメモ',
       body: body.trim(),
+      status,
       createdAt: now,
       updatedAt: now,
     };
@@ -27,6 +28,14 @@ export class MemoStore {
     if (!memo) return;
     memo.title = title.trim() || '無題のメモ';
     memo.body = body.trim();
+    memo.updatedAt = new Date().toISOString();
+    this.persist();
+  }
+
+  updateStatus(id: number, status: 'draft' | 'published'): void {
+    const memo = this.memos.find((m) => m.id === id);
+    if (!memo) return;
+    memo.status = status;
     memo.updatedAt = new Date().toISOString();
     this.persist();
   }

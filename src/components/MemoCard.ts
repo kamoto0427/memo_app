@@ -4,6 +4,7 @@ import { escHtml, formatDate } from '../utils';
 interface MemoCardCallbacks {
   onEdit: (id: number, title: string, body: string) => void;
   onDelete: (id: number) => void;
+  onStatusChange: (id: number, status: 'draft' | 'published') => void;
 }
 
 export function renderMemoCard(memo: Memo, callbacks: MemoCardCallbacks): HTMLElement {
@@ -18,6 +19,12 @@ export function renderMemoCard(memo: Memo, callbacks: MemoCardCallbacks): HTMLEl
   card.querySelector<HTMLButtonElement>('.btn-delete')!
     .addEventListener('click', () => callbacks.onDelete(memo.id));
 
+  card.querySelector<HTMLButtonElement>('.btn-status')!
+    .addEventListener('click', () => {
+      const next = memo.status === 'draft' ? 'published' : 'draft';
+      callbacks.onStatusChange(memo.id, next);
+    });
+
   return card;
 }
 
@@ -26,10 +33,18 @@ function buildCardHTML(memo: Memo): string {
     ? `<span>更新: ${formatDate(memo.updatedAt)}</span>`
     : '';
 
+  const isDraft = memo.status === 'draft';
+  const statusBadge = isDraft
+    ? `<span class="status-badge status-draft">下書き</span>`
+    : `<span class="status-badge status-published">公開</span>`;
+  const statusBtnLabel = isDraft ? '公開する' : '下書きに戻す';
+
   return `
     <div class="memo-card-header">
       <div class="memo-card-title">${escHtml(memo.title)}</div>
       <div class="memo-card-actions">
+        ${statusBadge}
+        <button class="btn btn-ghost btn-status btn-status-toggle" title="${statusBtnLabel}">${statusBtnLabel}</button>
         <button class="btn-icon btn-edit" title="編集">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
@@ -82,6 +97,11 @@ function startEdit(card: HTMLElement, memo: Memo, callbacks: MemoCardCallbacks):
       .addEventListener('click', () => startEdit(card, memo, callbacks));
     card.querySelector<HTMLButtonElement>('.btn-delete')!
       .addEventListener('click', () => callbacks.onDelete(memo.id));
+    card.querySelector<HTMLButtonElement>('.btn-status')!
+      .addEventListener('click', () => {
+        const next = memo.status === 'draft' ? 'published' : 'draft';
+        callbacks.onStatusChange(memo.id, next);
+      });
   });
 
   card.querySelector(`#save-edit-${memo.id}`)!.addEventListener('click', () => {

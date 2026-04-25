@@ -258,12 +258,43 @@ header span {
 .section-label {
   width: 100%;
   max-width: 720px;
+  margin-bottom: 10px;
+}
+
+.section-label-row {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.6px;
   margin-bottom: 10px;
+}
+
+/* ---- Filter Tabs ---- */
+.filter-tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.filter-btn:hover { background: var(--surface-hover); }
+
+.filter-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
 }
 
 .count-badge {
@@ -342,8 +373,34 @@ header span {
 
 .memo-card-actions {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
   flex-shrink: 0;
+}
+
+/* ---- Status Badge ---- */
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.status-draft {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-published {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ---- Status Toggle Button ---- */
+.btn-status-toggle {
+  font-size: 12px;
+  padding: 4px 10px;
 }
 
 .memo-card-body {
