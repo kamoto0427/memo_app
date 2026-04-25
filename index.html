@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>メモ帳</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header>
+        <div class="logo">📝</div>
+        <h1>メモ帳</h1>
+        <span id="memo-count-header">0 件</span>
+      </header>
+
+      <!-- New Memo Form -->
+      <div class="form-card">
+        <div class="form-title-row">
+          <input class="input-title" id="new-title" type="text" placeholder="タイトル（任意）" />
+        </div>
+        <textarea class="textarea-body" id="new-body" placeholder="メモの内容を入力してください… (Ctrl+Enter で追加)"></textarea>
+        <div class="form-actions">
+          <button class="btn btn-primary" id="add-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            メモを追加
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <span class="search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </span>
+          <input class="input-search" id="search-input" type="text" placeholder="メモを検索…" />
+        </div>
+        <select class="sort-select" id="sort-select">
+          <option value="newest">新しい順</option>
+          <option value="oldest">古い順</option>
+          <option value="alpha">タイトル順</option>
+        </select>
+      </div>
+
+      <div class="section-label">
+        メモ一覧 <span class="count-badge" id="visible-count">0</span>
+      </div>
+
+      <!-- Memo List -->
+      <div class="memo-list" id="memo-list"></div>
+
+      <!-- Delete Confirm Dialog -->
+      <div class="confirm-overlay" id="confirm-overlay" style="display:none">
+        <div class="confirm-dialog">
+          <h3>メモを削除しますか？</h3>
+          <p>この操作は元に戻せません。メモは完全に削除されます。</p>
+          <div class="confirm-btns">
+            <button class="btn btn-ghost" id="confirm-cancel">キャンセル</button>
+            <button class="btn btn-danger" id="confirm-ok">削除する</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
