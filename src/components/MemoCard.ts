@@ -1,8 +1,9 @@
 import { Memo } from '../types';
 import { escHtml, formatDate } from '../utils';
+import { TagInput } from './TagInput';
 
 interface MemoCardCallbacks {
-  onEdit: (id: number, title: string, body: string) => void;
+  onEdit: (id: number, title: string, body: string, tags: string[]) => void;
   onDelete: (id: number) => void;
   onStatusChange: (id: number, status: 'draft' | 'published') => void;
 }
@@ -62,6 +63,7 @@ function buildCardHTML(memo: Memo): string {
       </div>
     </div>
     ${memo.body ? `<div class="memo-card-body">${escHtml(memo.body)}</div>` : ''}
+    ${memo.tags.length > 0 ? `<div class="memo-card-tags">${memo.tags.map((t) => `<span class="tag-chip-readonly">${escHtml(t)}</span>`).join('')}</div>` : ''}
     <div class="memo-card-footer">
       <span>作成: ${formatDate(memo.createdAt)}</span>
       ${updated}
@@ -74,6 +76,7 @@ function startEdit(card: HTMLElement, memo: Memo, callbacks: MemoCardCallbacks):
   card.innerHTML = `
     <input class="edit-input-title" id="edit-title-${memo.id}" value="${escHtml(memo.title)}" placeholder="タイトル" />
     <textarea class="edit-textarea-body" id="edit-body-${memo.id}">${escHtml(memo.body)}</textarea>
+    <div id="edit-tags-mount-${memo.id}" class="edit-tags-row"></div>
     <div class="edit-actions">
       <button class="btn btn-ghost" id="cancel-edit-${memo.id}">キャンセル</button>
       <button class="btn btn-primary" id="save-edit-${memo.id}">
@@ -87,6 +90,10 @@ function startEdit(card: HTMLElement, memo: Memo, callbacks: MemoCardCallbacks):
 
   const titleInput = card.querySelector<HTMLInputElement>(`#edit-title-${memo.id}`)!;
   const bodyInput = card.querySelector<HTMLTextAreaElement>(`#edit-body-${memo.id}`)!;
+  const tagInput = new TagInput(
+    card.querySelector<HTMLElement>(`#edit-tags-mount-${memo.id}`)!,
+    memo.tags
+  );
 
   titleInput.focus();
 
@@ -108,7 +115,7 @@ function startEdit(card: HTMLElement, memo: Memo, callbacks: MemoCardCallbacks):
     const newTitle = titleInput.value.trim();
     const newBody = bodyInput.value.trim();
     if (!newTitle && !newBody) return;
-    callbacks.onEdit(memo.id, newTitle, newBody);
+    callbacks.onEdit(memo.id, newTitle, newBody, tagInput.getTags());
   });
 
   bodyInput.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -116,7 +123,7 @@ function startEdit(card: HTMLElement, memo: Memo, callbacks: MemoCardCallbacks):
       const newTitle = titleInput.value.trim();
       const newBody = bodyInput.value.trim();
       if (!newTitle && !newBody) return;
-      callbacks.onEdit(memo.id, newTitle, newBody);
+      callbacks.onEdit(memo.id, newTitle, newBody, tagInput.getTags());
     }
   });
 }

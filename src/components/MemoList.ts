@@ -2,7 +2,7 @@ import { Memo, SortOrder, StatusFilter } from '../types';
 import { renderMemoCard } from './MemoCard';
 
 interface MemoListCallbacks {
-  onEdit: (id: number, title: string, body: string) => void;
+  onEdit: (id: number, title: string, body: string, tags: string[]) => void;
   onDelete: (id: number) => void;
   onStatusChange: (id: number, status: 'draft' | 'published') => void;
 }
