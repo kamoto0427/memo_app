@@ -37,8 +37,8 @@ const confirmDialog = new ConfirmDialog((id) => {
 });
 
 const memoList = new MemoList({
-  onEdit: (id, title, body) => {
-    store.update(id, title, body);
+  onEdit: (id, title, body, tags) => {
+    store.update(id, title, body, tags);
     refresh();
     showToast('メモを更新しました');
   },
@@ -50,8 +50,8 @@ const memoList = new MemoList({
   },
 });
 
-new MemoForm((title, body, status) => {
-  store.add(title, body, status);
+new MemoForm((title, body, status, tags) => {
+  store.add(title, body, status, tags);
   refresh();
   showToast(status === 'published' ? 'メモを公開しました' : '下書きとして保存しました');
 });
